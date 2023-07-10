@@ -76,28 +76,33 @@ function classifyResult(string) {
     }
 }
 
+function getOutcome(gameNum, rounds) {
+    let round = playRound(getPlayerChoice(), getComputerChoice());
+    console.log(`Round ${gameNum}: ${round}`);
+    let outcome = classifyResult(round);
+    return outcome;
+}
+
+function displayWinner(score, rounds) {
+    (score / rounds > 0.5) ?
+        console.log(`You Win the Game! ${score} games to ${rounds - score}`) :
+        console.log(`You Lose the Game! ${score} games to ${rounds - score}`);
+}
+
 function game() {
     const rounds = 5;
     alert(`Welcome to Rock Paper Scissors! Open the browser console to see the game progress. Best of ${rounds} rounds wins!`)
     let score = 0;
     for (let i = 1; i <= rounds; i++) {
-        let round = playRound(getPlayerChoice(), getComputerChoice());
-        console.log(`Round ${i}: ${round}`);
-        let result = classifyResult(round);
-        while (result === 'draw') {
-            round = playRound(getPlayerChoice(), getComputerChoice());
-            console.log(`Round ${i}: ${round}`);
-            result = classifyResult(round);
+        let outcome = getOutcome(i, rounds);
+        while (outcome === 'draw') {
+            outcome = getOutcome(i, rounds);
         }
-        if (result === 'win') {
+        if (outcome === 'win') {
             score += 1;
         }
     }
-    if (score / rounds > 0.5) {
-        console.log(`You Win the Game! ${score} games to ${rounds - score}`);
-    } else {
-        console.log(`You Lose the Game! ${score} games to ${rounds - score}`);
-    }
+    displayWinner(score, rounds)
 }
 
 game();
