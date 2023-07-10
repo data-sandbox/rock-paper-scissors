@@ -76,10 +76,10 @@ function classifyResult(string) {
     }
 }
 
-
 function game() {
-    let score = 0;
     const rounds = 5;
+    alert(`Welcome to Rock Paper Scissors! Open the browser console to see the game progress. Best of ${rounds} rounds wins!`)
+    let score = 0;
     for (let i = 1; i <= rounds; i++) {
         let round = playRound(getPlayerChoice(), getComputerChoice());
         console.log(`Round ${i}: ${round}`);
