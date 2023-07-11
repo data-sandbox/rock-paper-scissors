@@ -73,10 +73,12 @@ function classifyResult(string) {
 }
 
 function displayOutcome(string) {
-    const content = document.createElement('div');
-    content.classList.add('content');
-    content.textContent = `Round ${round}: ${string}`;
-    container.appendChild(content);
+    document.getElementById('content').textContent = `Round ${round}: ${string}`;
+    // Variant: append the results
+    // const content = document.createElement('div');
+    // content.classList.add('content');
+    // content.textContent = `Round ${round}: ${string}`;
+    // container.appendChild(content);
 
     let result = classifyResult(string);
     if (result === 'draw') {
@@ -89,10 +91,12 @@ function displayOutcome(string) {
         console.log('Score error.')
     };
 
-    const score_msg = document.createElement('div');
-    score_msg.classList.add('score');
-    score_msg.textContent = `Score: You ${scoreUser}, Computer ${scoreComputer}`;
-    container.appendChild(score_msg);
+    document.getElementById('score').textContent = `Score: You ${scoreUser}, Computer ${scoreComputer}`;
+    // Variant: append the results
+    // const score_msg = document.createElement('div');
+    // score_msg.classList.add('score');
+    // score_msg.textContent = `Score: You ${scoreUser}, Computer ${scoreComputer}`;
+    // container.appendChild(score_msg);
 }
 
 function endGame() {
@@ -103,11 +107,14 @@ function endGame() {
         content.textContent = `You Lose the Game! ${scoreUser} games to ${scoreComputer}`;
     container.appendChild(content);
 
-    buttons.forEach(div => div.removeEventListener('click', captureSelection));
+    buttons.forEach(button => button.removeEventListener('click', captureSelection));
+    buttons.forEach(button => button.removeEventListener('transitionend', removeTransition));
+    buttons.forEach(button => button.classList.add('press'));
 }
 
 function captureSelection(e) {
     let outcome = playRound(this.classList.value, getComputerChoice());
+    this.classList.add('press');
     displayOutcome(outcome);
     round++;
 
@@ -116,4 +123,10 @@ function captureSelection(e) {
     };
 }
 
-buttons.forEach(div => div.addEventListener('click', captureSelection));
+function removeTransition(e) {
+    if (e.propertyName !== 'transform') return;
+    this.classList.remove('press');
+}
+
+buttons.forEach(button => button.addEventListener('transitionend', removeTransition));
+buttons.forEach(button => button.addEventListener('click', captureSelection));
