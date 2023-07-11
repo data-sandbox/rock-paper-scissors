@@ -1,6 +1,10 @@
-/*
-Rock Paper Scissors game against the computer within the browser console.
-*/
+const container = document.querySelector('#container');
+const buttons = document.querySelectorAll('button');
+
+let round = 1;
+let scoreLimit = 5;
+let scoreUser = 0;
+let scoreComputer = 0;
 
 function getComputerChoice() {
     let computerChoice = Math.floor(Math.random() * 3);
@@ -17,14 +21,6 @@ function getComputerChoice() {
         default:
             return "case error";
     }
-}
-
-function getPlayerChoice() {
-    let playerChoice = prompt("Enter your choice: rock, paper, or scissors").toLowerCase();
-    while (playerChoice !== 'rock' && playerChoice !== 'paper' && playerChoice !== 'scissors') {
-        playerChoice = prompt("Choice not understood, try again: rock, paper, or scissors").toLowerCase();
-    }
-    return playerChoice;
 }
 
 function playRound(playerSelection, computerSelection) {
@@ -76,33 +72,48 @@ function classifyResult(string) {
     }
 }
 
-function getOutcome(gameNum, rounds) {
-    let round = playRound(getPlayerChoice(), getComputerChoice());
-    console.log(`Round ${gameNum}: ${round}`);
-    let outcome = classifyResult(round);
-    return outcome;
+function displayOutcome(string) {
+    const content = document.createElement('div');
+    content.classList.add('content');
+    content.textContent = `Round ${round}: ${string}`;
+    container.appendChild(content);
+
+    let result = classifyResult(string);
+    if (result === 'draw') {
+        return;
+    } else if (result === 'win') {
+        scoreUser += 1
+    } else if (result === 'lose') {
+        scoreComputer += 1
+    } else {
+        console.log('Score error.')
+    };
+
+    const score_msg = document.createElement('div');
+    score_msg.classList.add('score');
+    score_msg.textContent = `Score: You ${scoreUser}, Computer ${scoreComputer}`;
+    container.appendChild(score_msg);
 }
 
-function displayWinner(score, rounds) {
-    (score / rounds > 0.5) ?
-        console.log(`You Win the Game! ${score} games to ${rounds - score}`) :
-        console.log(`You Lose the Game! ${score} games to ${rounds - score}`);
+function endGame() {
+    const content = document.createElement('div');
+    content.classList.add('content');
+    (scoreUser > scoreComputer) ?
+        content.textContent = `You Win the Game! ${scoreUser} games to ${scoreComputer}` :
+        content.textContent = `You Lose the Game! ${scoreUser} games to ${scoreComputer}`;
+    container.appendChild(content);
+
+    buttons.forEach(div => div.removeEventListener('click', captureSelection));
 }
 
-function game() {
-    const rounds = 5;
-    alert(`Welcome to Rock Paper Scissors! Open the browser console to see the game progress. Best of ${rounds} rounds wins!`)
-    let score = 0;
-    for (let i = 1; i <= rounds; i++) {
-        let outcome = getOutcome(i, rounds);
-        while (outcome === 'draw') {
-            outcome = getOutcome(i, rounds);
-        }
-        if (outcome === 'win') {
-            score += 1;
-        }
-    }
-    displayWinner(score, rounds)
+function captureSelection(e) {
+    let outcome = playRound(this.classList.value, getComputerChoice());
+    displayOutcome(outcome);
+    round++;
+
+    if (scoreUser >= scoreLimit || scoreComputer >= scoreLimit) {
+        endGame()
+    };
 }
 
-game();
+buttons.forEach(div => div.addEventListener('click', captureSelection));
