@@ -6,7 +6,7 @@ html {
 }
 
 h1 {
-    margin-top: 8rem;
+    margin-top: 6rem;
 }
 
 div.buttons {
@@ -46,4 +46,8 @@ button {
     transform: scale(1.05);
     border-color: #ffc600;
     box-shadow: 0 0 1rem #ffc600;
+}
+
+footer {
+    margin-top: 10rem;
 }
